@@ -118,11 +118,13 @@ function addRow(data) {
   tdArray[5].innerHTML = `${data[currIndex].years}`;
   document.getElementById(thisTrId).appendChild(tdArray[5]);
 
+  let touchEvent = "ontouchstart" in window ? "touchstart" : "click";
+
   //Create a delete row button
   let button = document.createElement("button");
   button.innerHTML = "X";
   button.setAttribute("class", "deleteButton");
-  button.addEventListener("click", deleteRow);
+  button.addEventListener(touchEvent, deleteRow);
 
   document.getElementById(thisTrId).appendChild(button);
 }
