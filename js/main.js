@@ -121,8 +121,8 @@ function addRow(data) {
   //Create a delete row button
   let button = document.createElement("button");
   button.innerHTML = "X";
-  button.setAttribute("onclick", "deleteRow(event)");
   button.setAttribute("class", "deleteButton");
+  button.addEventListener("click", deleteRow);
 
   document.getElementById(thisTrId).appendChild(button);
 }
