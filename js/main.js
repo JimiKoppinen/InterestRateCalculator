@@ -130,8 +130,7 @@ function addRow(data) {
 }
 
 function deleteRow(event) {
-  alert("nappia painettu");
   const deletable = event.path[1].id;
   const row = document.getElementById(deletable);
-  row.remove();
+  row.style.display = "none";
 }
