@@ -7,7 +7,7 @@ html {
 }
 
 h1 {
-    color: white;
+    color: #654a4e;
     font-size: 4.5rem
 }
 
@@ -22,12 +22,11 @@ form {
 
 .container {
     margin: 3rem;
-    justify-content: space-between;
+    justify-content: flex-start;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    /* align-content: space-around; */
-    align-items: center;
+    align-items: stretch;
 }
 
 .padding {
@@ -36,19 +35,19 @@ form {
 }
 
 .calcButton {
-    background-color: coral;
-    color: cornsilk;
+    background-color: rgb(71, 27, 10);
+    color: rgb(255, 255, 255);
     margin-left: 1rem;
     font-size: 1.5rem;
     padding: 0.5rem 1rem 0.5rem 1rem;
 }
 
 .deleteButton {
-    height: 1.5rem;
-    width: 1.5rem;
-    color: cornsilk;
-    background-color: coral;
-
+    height: 2rem;
+    width: 5rem;
+    color: rgb(255, 255, 255);
+    background-color: rgb(81, 35, 18);
+    margin-top: 1.5rem;
 }
 
 
@@ -84,8 +83,14 @@ tr:hover {
 }
 
 @media (max-width: 1440px) {
-    html {
-        font-size: 20px;
+    .instructions{
+        font-size: 16px;
+    }
+    .header {
+        font-size: 50px;
+    }
+    .results {
+        font-size: 10px;
     }
   }
 }
