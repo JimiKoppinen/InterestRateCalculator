@@ -9,16 +9,10 @@ const formatter = new Intl.NumberFormat("fi-FI", {
 function runCalc(event) {
   event.preventDefault();
 
-  let investment, years, monthly, profit;
-  investment = parseFloat(document.querySelector(".investment").value);
-  investment = !investment ? 0 : investment;
-
-  years = parseFloat(document.querySelector(".years").value);
-  years = !years ? 0 : years;
-  monthly = parseFloat(document.querySelector(".euros").value);
-  monthly = !monthly ? 0 : monthly;
-  profit = parseFloat(document.querySelector(".profit").value);
-  profit = !profit ? 0 : profit;
+  let investment = getFormattedInputValue("investment");
+  let years = getFormattedInputValue("years");
+  let monthly = getFormattedInputValue("monthly");
+  let profit = getFormattedInputValue("profit");
   let monthlyProfit = Math.pow(1 + profit / 100, 1 / 12) - 1;
   let investmentForProfitCalc = investment;
 
@@ -60,8 +54,24 @@ function addResultToArray(
   ultimPercentage,
   years
 ) {
-  data.push({ investment, ultimProfit, ultimCapital, ultimPercentage, years });
+  data.push({
+    investment,
+    ultimProfit,
+    ultimCapital,
+    ultimPercentage,
+    years,
+  });
   addRow(data);
+}
+
+function getFormattedInputValue(inputSelector) {
+  const returnValue = document.querySelector(`.${inputSelector}`).value;
+
+  if (!returnValue) {
+    return 0;
+  } else {
+    return parseFloat(returnValue);
+  }
 }
 
 function roundNumber(num, decimals) {
@@ -93,7 +103,7 @@ function addRow(data) {
   tr.setAttribute("id", thisTrId);
   document.getElementById("tr0").appendChild(tr);
 
-  //initiate an array with td-elements for the table
+  //initiate an array with td-elements for the results  table
   let tdArray = [];
   for (let i = 0; i < 6; i++) {
     tdArray[i] = document.createElement("td");
@@ -118,17 +128,15 @@ function addRow(data) {
   tdArray[5].innerHTML = `${data[currIndex].years}`;
   document.getElementById(thisTrId).appendChild(tdArray[5]);
 
+  //Create a delete row button
   let touchEvent = "ontouchstart" in window ? "touchstart" : "click";
-
   //Create a delete row button
   let button = document.createElement("button");
-  button.innerHTML = "X";
+  button.innerHTML = "Poista Rivi";
   button.setAttribute("class", "deleteButton");
   button.addEventListener(touchEvent, deleteRow);
-
   document.getElementById(thisTrId).appendChild(button);
 }
-
 function deleteRow(event) {
   const deletable = event.path[1].id;
   const row = document.getElementById(deletable);
