@@ -1,144 +1,79 @@
-let data = [];
+import { roundNumber, formatter, getFormattedInputValue } from "./utils.js";
+import { MONTHS_IN_YEAR, PERCENTAGE_TO_DECIMAL } from "./constants.js";
+import { addResultToArray } from "./statehandler.js";
 
-//initiate a currency formatter
-const formatter = new Intl.NumberFormat("fi-FI", {
-  style: "currency",
-  currency: "EUR",
+//Add event listener for the calculate button
+document.addEventListener("DOMContentLoaded", () => {
+  const button = document.querySelector(".calcButton");
+  button.addEventListener("click", function (event) {
+    event.preventDefault();
+    runCalc(event);
+  });
 });
 
 function runCalc(event) {
   event.preventDefault();
 
-  let investment = getFormattedInputValue("investment");
+  let investedAmount = getFormattedInputValue("investment");
   let years = getFormattedInputValue("years");
-  let monthly = getFormattedInputValue("monthly");
-  let profit = getFormattedInputValue("profit");
-  let monthlyProfit = Math.pow(1 + profit / 100, 1 / 12) - 1;
-  let investmentForProfitCalc = investment;
+  let monthlyAmount = getFormattedInputValue("monthly");
+  let profitPercentage = getFormattedInputValue("profit");
+  let monthlyProfit = calculateMonthlyProfit(profitPercentage);
+  let initialInvestmentAmount = investedAmount;
 
-  for (i = 0; i < years; i++) {
-    // if we have monthly saving
-    if (monthly) {
-      for (j = 0; j < 12; j++) {
-        // add monthly saving
-        investment += monthly;
-        // add profit
-        investment = (1 + monthlyProfit) * investment;
+  for (let i = 0; i < years; i++) {
+    // if we have monthly investments
+    if (monthlyAmount) {
+      for (let j = 0; j < MONTHS_IN_YEAR; j++) {
+        // add monthly amounts
+        investedAmount += monthlyAmount;
+        // add monthly profit
+        investedAmount = (1 + monthlyProfit) * investedAmount;
       }
     } else {
-      investment = (1 + profit / 100) * investment;
+      investedAmount =
+        (1 + profitPercentage / PERCENTAGE_TO_DECIMAL) * investedAmount;
     }
   }
 
-  let ultimCapital = investmentForProfitCalc + monthly * years * 12;
-
-  let ultimProfit = calcOnlyProfit(investment, ultimCapital);
-
-  let ultimPercentage = roundNumber(
-    calcProfitPercentage(investment, ultimProfit)
+  let finalCapital = calculateFinalCapital(
+    initialInvestmentAmount,
+    monthlyAmount,
+    years
+  );
+  let finalProfit = calcFinalProfit(investedAmount, finalCapital);
+  let finalPercentage = roundNumber(
+    calcProfitPercentage(investedAmount, finalProfit)
   );
 
   addResultToArray(
-    formatter.format(investment),
-    formatter.format(ultimProfit),
-    formatter.format(ultimCapital),
-    ultimPercentage,
+    formatter.format(investedAmount),
+    formatter.format(finalProfit),
+    formatter.format(finalCapital),
+    finalPercentage,
     years
   );
 }
 
-function addResultToArray(
-  investment,
-  ultimProfit,
-  ultimCapital,
-  ultimPercentage,
-  years
-) {
-  data.push({
-    investment,
-    ultimProfit,
-    ultimCapital,
-    ultimPercentage,
-    years,
-  });
-  addRow(data);
+function calculateMonthlyProfit(profitPercentage) {
+  return (
+    Math.pow(1 + profitPercentage / PERCENTAGE_TO_DECIMAL, 1 / MONTHS_IN_YEAR) -
+    1
+  );
 }
 
-function getFormattedInputValue(inputSelector) {
-  const returnValue = document.querySelector(`.${inputSelector}`).value;
-
-  if (!returnValue) {
-    return 0;
-  } else {
-    return parseFloat(returnValue);
-  }
+function calculateFinalCapital(initialInvestment, monthlyInvestment, years) {
+  return initialInvestment + monthlyInvestment * years * MONTHS_IN_YEAR;
 }
 
-function roundNumber(num, decimals) {
-  // if decimals not set, default to 0
-  if (isNaN(decimals)) decimals = 0;
-
-  // the actual rounding
-  num = Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
-  return num;
-}
-
-function calcOnlyProfit(investmentAfter, ultimCapital) {
-  return investmentAfter - ultimCapital;
+function calcFinalProfit(investmentAfter, finalCapital) {
+  return investmentAfter - finalCapital;
 }
 
 function calcProfitPercentage(investment, ultimProfit) {
   if (!ultimProfit || !investment) {
     return 0.0;
   }
-  let num = (ultimProfit / investment) * 100;
+  let num = (ultimProfit / investment) * PERCENTAGE_TO_DECIMAL;
   return num.toFixed(2);
-}
-
-function addRow(data) {
-  let currIndex = data.length - 1;
-  let thisTrId = `tr${data.length}`;
-
-  let tr = document.createElement("tr");
-  tr.setAttribute("id", thisTrId);
-  document.getElementById("tr0").appendChild(tr);
-
-  //initiate an array with td-elements for the results  table
-  let tdArray = [];
-  for (let i = 0; i < 6; i++) {
-    tdArray[i] = document.createElement("td");
-  }
-
-  tdArray[0].innerHTML = `${currIndex + 1}.`;
-  document.getElementById(thisTrId).appendChild(tdArray[0]);
-
-  tdArray[1].setAttribute("class", "boldTd");
-  tdArray[1].innerHTML = `${data[currIndex].investment}`;
-  document.getElementById(thisTrId).appendChild(tdArray[1]);
-
-  tdArray[2].innerHTML = `${data[currIndex].ultimCapital}`;
-  document.getElementById(thisTrId).appendChild(tdArray[2]);
-
-  tdArray[3].innerHTML = `${data[currIndex].ultimProfit}`;
-  document.getElementById(thisTrId).appendChild(tdArray[3]);
-
-  tdArray[4].innerHTML = `${data[currIndex].ultimPercentage} %`;
-  document.getElementById(thisTrId).appendChild(tdArray[4]);
-
-  tdArray[5].innerHTML = `${data[currIndex].years}`;
-  document.getElementById(thisTrId).appendChild(tdArray[5]);
-
-  //Create a delete row button
-  let touchEvent = "ontouchstart" in window ? "touchstart" : "click";
-  //Create a delete row button
-  let button = document.createElement("button");
-  button.innerHTML = "Poista Rivi";
-  button.setAttribute("class", "deleteButton");
-  button.addEventListener(touchEvent, deleteRow);
-  document.getElementById(thisTrId).appendChild(button);
-}
-function deleteRow(event) {
-  const deletable = event.path[1].id;
-  const row = document.getElementById(deletable);
-  row.style.display = "none";
 }

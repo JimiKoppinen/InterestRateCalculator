@@ -1,6 +1,9 @@
-# Vanilla JavaScript App
+# Interest Rate Calculator
 
+A simple web-based **Interest Rate Calculator** that allows users to input investment values, set monthly contributions, and calculate final capital and profits using compound interest.
 
-[Azure Static Web Apps](https://docs.microsoft.com/azure/static-web-apps/overview) allows you to easily build JavaScript apps in minutes. Use this repo with the [quickstart](https://docs.microsoft.com/azure/static-web-apps/getting-started?tabs=vanilla-javascript) to build and customize a new static site.
+## Features
 
-This repo is used as a starter for a _very basic_ HTML web application using no front-end frameworks.
+- Calculate compound interest with monthly investments
+- View final capital, profit, and profit percentage after a given number of years
+- Remove rows of results dynamically
