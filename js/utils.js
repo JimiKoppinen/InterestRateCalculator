@@ -8,9 +8,9 @@ export function roundNumber(num, decimals) {
 }
 
 //Number formatter for displaying the value
-export const formatter = new Intl.NumberFormat("fi-FI", {
-  style: "currency",
-  currency: "EUR",
+export const formatter = new Intl.NumberFormat('fi-FI', {
+  style: 'currency',
+  currency: 'EUR',
 });
 
 export function getFormattedInputValue(inputSelector) {

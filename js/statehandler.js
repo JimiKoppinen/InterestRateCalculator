@@ -1,67 +1,68 @@
-let calculationData = [];
+import { RESULT_TABLE_LENGTH, TD_ARRAY_INDEXES, ADDITIONAL_CELL_DATA_KEYS } from './constants.js';
 
-export function addResultToArray(
-  investment,
-  finalProfit,
-  finalCapital,
-  finalPercentage,
-  years
-) {
-  calculationData.push({
+let calculationState = [];
+
+export function addResultToArray(result) {
+  const { investment, finalProfit, finalCapital, finalPercentage, years } = result;
+
+  calculationState.push({
     investment,
     finalProfit,
     finalCapital,
     finalPercentage,
     years,
   });
-  addRow(calculationData);
+
+  addRow(calculationState);
 }
 
-function addRow(data) {
-  let currIndex = data.length - 1;
-  let thisTrId = `tr${data.length}`;
+function addRow(calculationData) {
+  const rowIndex = calculationData.length - 1;
+  const thisTrId = `tr${calculationData.length}`;
 
-  let tr = document.createElement("tr");
-  tr.setAttribute("id", thisTrId);
-  document.getElementById("tr0").appendChild(tr);
+  const tr = document.createElement('tr');
+  tr.setAttribute('id', thisTrId);
+  document.getElementById('tr0').appendChild(tr);
 
   //initiate an array with td-elements for the results table
-  let tdArray = [];
-  for (let i = 0; i < 6; i++) {
-    tdArray[i] = document.createElement("td");
-  }
+  const tdArray = Array.from({ length: RESULT_TABLE_LENGTH }, () => document.createElement('td'));
+  tdArray.forEach((td) => appendChildren(thisTrId, td));
 
-  tdArray[0].innerHTML = `${currIndex + 1}.`;
-  document.getElementById(thisTrId).appendChild(tdArray[0]);
+  addContent(tdArray, rowIndex);
+  createDeleteButton(thisTrId);
+}
 
-  tdArray[1].setAttribute("class", "boldTd");
-  tdArray[1].innerHTML = `${data[currIndex].investment}`;
-  document.getElementById(thisTrId).appendChild(tdArray[1]);
+function createDeleteButton(rowId) {
+  const td = document.createElement('td');
+  const button = document.createElement('button');
+  button.innerHTML = 'Poista Rivi';
+  button.setAttribute(ADDITIONAL_CELL_DATA_KEYS.classKey, 'deleteButton');
+  button.addEventListener('click', deleteRow);
+  td.appendChild(button);
+  appendChildren(rowId, td);
+}
 
-  tdArray[2].innerHTML = `${data[currIndex].finalCapital}`;
-  document.getElementById(thisTrId).appendChild(tdArray[2]);
+function addContent(tdArray, rowIndex) {
+  tdArray[TD_ARRAY_INDEXES.rowNumber].innerHTML = `${rowIndex + 1}.`;
+  tdArray[TD_ARRAY_INDEXES.investment].setAttribute(
+    ADDITIONAL_CELL_DATA_KEYS.classKey,
+    ADDITIONAL_CELL_DATA_KEYS.boldTd
+  );
+  tdArray[TD_ARRAY_INDEXES.investment].innerHTML = `${calculationState[rowIndex].investment}`;
+  tdArray[TD_ARRAY_INDEXES.finalCapital].innerHTML = `${calculationState[rowIndex].finalCapital}`;
+  tdArray[TD_ARRAY_INDEXES.finalProfit].innerHTML = `${calculationState[rowIndex].finalProfit}`;
+  tdArray[
+    TD_ARRAY_INDEXES.finalPercentage
+  ].innerHTML = `${calculationState[rowIndex].finalPercentage} %`;
+  tdArray[TD_ARRAY_INDEXES.years].innerHTML = `${calculationState[rowIndex].years}`;
+}
 
-  tdArray[3].innerHTML = `${data[currIndex].finalProfit}`;
-  document.getElementById(thisTrId).appendChild(tdArray[3]);
-
-  tdArray[4].innerHTML = `${data[currIndex].finalPercentage} %`;
-  document.getElementById(thisTrId).appendChild(tdArray[4]);
-
-  tdArray[5].innerHTML = `${data[currIndex].years}`;
-  document.getElementById(thisTrId).appendChild(tdArray[5]);
-
-  //Create a delete row button
-  let touchEvent = "ontouchstart" in window ? "touchstart" : "click";
-  //Create a delete row button
-  let button = document.createElement("button");
-  button.innerHTML = "Poista Rivi";
-  button.setAttribute("class", "deleteButton");
-  button.addEventListener(touchEvent, deleteRow);
-  document.getElementById(thisTrId).appendChild(button);
+function appendChildren(parentElementId, childElement) {
+  document.getElementById(parentElementId).appendChild(childElement);
 }
 
 function deleteRow(event) {
-  const row = event.target.closest("tr");
+  const row = event.target.closest('tr');
 
   if (row) {
     row.remove();
