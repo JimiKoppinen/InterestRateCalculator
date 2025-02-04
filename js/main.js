@@ -1,11 +1,11 @@
-import { roundNumber, formatter, getFormattedInputValue } from "./utils.js";
-import { MONTHS_IN_YEAR, PERCENTAGE_TO_DECIMAL } from "./constants.js";
-import { addResultToArray } from "./statehandler.js";
+import { roundNumber, formatter, getFormattedInputValue } from './utils.js';
+import { MONTHS_IN_YEAR, PERCENTAGE_TO_DECIMAL } from './constants.js';
+import { addResultToArray } from './statehandler.js';
 
 //Add event listener for the calculate button
-document.addEventListener("DOMContentLoaded", () => {
-  const button = document.querySelector(".calcButton");
-  button.addEventListener("click", function (event) {
+document.addEventListener('DOMContentLoaded', () => {
+  const button = document.querySelector('.calcButton');
+  button.addEventListener('click', function (event) {
     event.preventDefault();
     runCalc(event);
   });
@@ -14,10 +14,10 @@ document.addEventListener("DOMContentLoaded", () => {
 function runCalc(event) {
   event.preventDefault();
 
-  let investedAmount = getFormattedInputValue("investment");
-  let years = getFormattedInputValue("years");
-  let monthlyAmount = getFormattedInputValue("monthly");
-  let profitPercentage = getFormattedInputValue("profit");
+  let investedAmount = getFormattedInputValue('investment');
+  let years = getFormattedInputValue('years');
+  let monthlyAmount = getFormattedInputValue('monthly');
+  let profitPercentage = getFormattedInputValue('profit');
   let monthlyProfit = calculateMonthlyProfit(profitPercentage);
   let initialInvestmentAmount = investedAmount;
 
@@ -31,35 +31,25 @@ function runCalc(event) {
         investedAmount = (1 + monthlyProfit) * investedAmount;
       }
     } else {
-      investedAmount =
-        (1 + profitPercentage / PERCENTAGE_TO_DECIMAL) * investedAmount;
+      investedAmount = (1 + profitPercentage / PERCENTAGE_TO_DECIMAL) * investedAmount;
     }
   }
 
-  let finalCapital = calculateFinalCapital(
-    initialInvestmentAmount,
-    monthlyAmount,
-    years
-  );
+  let finalCapital = calculateFinalCapital(initialInvestmentAmount, monthlyAmount, years);
   let finalProfit = calcFinalProfit(investedAmount, finalCapital);
-  let finalPercentage = roundNumber(
-    calcProfitPercentage(investedAmount, finalProfit)
-  );
+  let finalPercentage = roundNumber(calcProfitPercentage(investedAmount, finalProfit));
 
-  addResultToArray(
-    formatter.format(investedAmount),
-    formatter.format(finalProfit),
-    formatter.format(finalCapital),
+  addResultToArray({
+    investment: formatter.format(investedAmount),
+    finalProfit: formatter.format(finalProfit),
+    finalCapital: formatter.format(finalCapital),
     finalPercentage,
-    years
-  );
+    years,
+  });
 }
 
 function calculateMonthlyProfit(profitPercentage) {
-  return (
-    Math.pow(1 + profitPercentage / PERCENTAGE_TO_DECIMAL, 1 / MONTHS_IN_YEAR) -
-    1
-  );
+  return Math.pow(1 + profitPercentage / PERCENTAGE_TO_DECIMAL, 1 / MONTHS_IN_YEAR) - 1;
 }
 
 function calculateFinalCapital(initialInvestment, monthlyInvestment, years) {

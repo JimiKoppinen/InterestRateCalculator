@@ -64,7 +64,6 @@ th {
 
 td {
     padding: 1rem;
-    border-bottom: ;
     border: 2px solid gainsboro;
 }
 
@@ -93,4 +92,3 @@ tr:hover {
         font-size: 10px;
     }
   }
-}
