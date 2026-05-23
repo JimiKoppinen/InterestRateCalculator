@@ -9,11 +9,6 @@ A simple web-based **compound interest calculator** (korkoa korolle -laskuri) wi
 - Compare multiple scenarios side-by-side in a results table
 - Remove individual result rows dynamically
 
-## Live App
-
-Deployed to Azure Static Web Apps:
-👉 https://thankful-plant-03c0b2a10.1.azurestaticapps.net
-
 ## How to Run Locally
 
 No build step needed — just open the HTML file in a browser:
