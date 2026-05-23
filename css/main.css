@@ -1,94 +1,631 @@
-* {
-    box-sizing: border-box;
-  }
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  /* Dark theme backgrounds */
+  --bg-primary:   #0d0d1a;
+  --bg-secondary: #161628;
+  --bg-surface:   #1e1e35;
+  --bg-input:     #252540;
+
+  /* Text */
+  --text-primary: #e8e8f5;
+  --text-muted:   #8888a8;
+  --text-on-accent: #0d0d1a;
+
+  /* Accent (sage green preserved from original) */
+  --accent:       #a4c994;
+  --accent-hover: #bcd9ab;
+  --accent-dim:   rgba(164, 201, 148, 0.15);
+  --accent-glow:  rgba(164, 201, 148, 0.25);
+
+  /* Danger */
+  --danger:       #e07070;
+  --danger-dim:   rgba(224, 112, 112, 0.15);
+
+  /* Borders */
+  --border:       #2e2e50;
+  --border-light: #3a3a60;
+
+  /* Shadows */
+  --shadow-sm:    0 1px 4px rgba(0, 0, 0, 0.4);
+  --shadow-md:    0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg:    0 8px 32px rgba(0, 0, 0, 0.6);
+
+  /* Transitions */
+  --t-fast:   150ms ease;
+  --t-normal: 250ms ease;
+  --t-slow:   400ms ease;
+
+  /* Typography */
+  --font: 'Biryani', sans-serif;
+
+  /* Border radius */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 html {
-    font-family: 'Biryani', sans-serif;
-    background-color: #e6ddde
+  font-family: var(--font);
+  font-size: 16px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-h1 {
-    color: #654a4e;
-    font-size: 4.5rem
+body {
+  min-height: 100vh;
+  padding: 1.5rem 1rem 4rem;
 }
 
-input {
-    padding: 0.5rem;
+/* Screen-reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
-form {
-    font-size: 1.5rem;
-    font-weight: 600;
-}
-
+/* ============================================================
+   LAYOUT
+   ============================================================ */
 .container {
-    margin: 3rem;
-    justify-content: flex-start;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: stretch;
+  max-width: 980px;
+  margin: 0 auto;
 }
 
-.padding {
-    margin: 0rem 1rem 1rem 1rem;
-    font-size: 1.5rem;
+/* ============================================================
+   PAGE HEADER
+   ============================================================ */
+.page-header {
+  text-align: center;
+  padding: 3rem 0 2.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.page-header::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  margin: 1.5rem auto 0;
+}
+
+.page-title {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.page-subtitle {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  color: var(--text-muted);
+  font-weight: 300;
+  margin-top: 0.625rem;
+}
+
+/* ============================================================
+   CALCULATOR CARD
+   ============================================================ */
+.calculator-section {
+  margin-bottom: 2.5rem;
+}
+
+.calculator-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-md);
+  padding: 2rem 2.25rem;
+}
+
+/* ============================================================
+   FORM GRID
+   ============================================================ */
+#calculatorForm {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1.25rem 1.5rem;
+  align-items: end;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.field-group label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+/* ============================================================
+   INPUTS
+   ============================================================ */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper .padding {
+  width: 100%;
+  padding: 0.75rem 3rem 0.75rem 0.875rem;
+  font-family: var(--font);
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  background: var(--bg-input);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  transition:
+    border-color var(--t-fast),
+    box-shadow var(--t-fast),
+    background-color var(--t-fast);
+  /* Hide browser spinners */
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.input-wrapper .padding::-webkit-outer-spin-button,
+.input-wrapper .padding::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-wrapper .padding::placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+  font-weight: 200;
+}
+
+.input-wrapper .padding:hover {
+  border-color: var(--border-light);
+}
+
+.input-wrapper .padding:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--bg-surface);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* Unit hint badge inside input */
+.unit-hint {
+  position: absolute;
+  right: 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  pointer-events: none;
+  user-select: none;
+  transition: color var(--t-fast);
+}
+
+.input-wrapper:focus-within .unit-hint {
+  color: var(--accent);
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.button-group {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .calcButton {
-    background-color: rgb(71, 27, 10);
-    color: rgb(255, 255, 255);
-    margin-left: 1rem;
-    font-size: 1.5rem;
-    padding: 0.5rem 1rem 0.5rem 1rem;
+  flex: 1;
+  min-width: 120px;
+  padding: 0.8125rem 1.5rem;
+  background: var(--accent);
+  color: var(--text-on-accent);
+  font-family: var(--font);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  border: none;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition:
+    background-color var(--t-fast),
+    transform var(--t-fast),
+    box-shadow var(--t-fast);
+  box-shadow: 0 2px 8px var(--accent-glow);
+  white-space: nowrap;
 }
 
-.deleteButton {
-    height: 2rem;
-    width: 5rem;
-    color: rgb(255, 255, 255);
-    background-color: rgb(81, 35, 18);
-    margin-top: 1.5rem;
+.calcButton:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px var(--accent-glow);
 }
 
-
-table {
-    background-color: white;
-    border: 1px solid black;
-    width: 75%;
-    font-size: 1.5rem;
+.calcButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px var(--accent-glow);
 }
 
-th {
-    padding: 0.5rem;
+.calcButton:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
 }
 
-td {
-    padding: 1rem;
-    border: 2px solid gainsboro;
+.clearButton {
+  flex: 0 0 auto;
+  padding: 0.8125rem 1.25rem;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition:
+    color var(--t-fast),
+    border-color var(--t-fast),
+    background-color var(--t-fast);
+  white-space: nowrap;
 }
 
+.clearButton:hover {
+  color: var(--danger);
+  border-color: var(--danger);
+  background: var(--danger-dim);
+}
+
+.clearButton:focus-visible {
+  outline: 3px solid var(--danger);
+  outline-offset: 3px;
+}
+
+/* ============================================================
+   RESULTS SECTION
+   ============================================================ */
+.results-section {
+  animation: fadeInUp var(--t-slow) both;
+}
+
+.table-scroll-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-md);
+}
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+#tr0 {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-secondary);
+  border-radius: var(--r-lg);
+  font-size: 0.9375rem;
+  overflow: hidden;
+}
+
+/* Sticky header */
+#tr0 thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+#tr0 thead tr {
+  background: var(--bg-surface);
+  border-bottom: 2px solid var(--border-light);
+}
+
+#tr0 th {
+  padding: 0.875rem 1rem;
+  text-align: left;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+#tr0 th:first-child {
+  padding-left: 1.25rem;
+}
+
+/* Body rows */
+#tr0 tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background-color var(--t-fast);
+}
+
+#tr0 tbody tr:last-child {
+  border-bottom: none;
+}
+
+#tr0 tbody tr:not(.empty-state-row):hover {
+  background: var(--bg-surface);
+}
+
+#tr0 td {
+  padding: 1rem;
+  border: none;
+  color: var(--text-primary);
+  font-weight: 300;
+  vertical-align: middle;
+}
+
+#tr0 td:first-child {
+  padding-left: 1.25rem;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+/* Highlighted "total" column */
 .boldTd {
-    font-style: bold;
-    border: 2px solid rgb(164, 201, 148);
-
+  font-weight: 700 !important;
+  color: var(--accent) !important;
+  font-size: 1rem;
+  position: relative;
 }
 
-tr:hover {
-    background-color: #f5f5f5;
+.boldTd::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 0 2px 2px 0;
 }
 
-::-webkit-input-placeholder {
-    font-style: italic;
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.9375rem;
+  font-weight: 300;
 }
 
-@media (max-width: 1440px) {
-    .instructions{
-        font-size: 16px;
-    }
-    .header {
-        font-size: 50px;
-    }
-    .results {
-        font-size: 10px;
-    }
+.empty-state strong {
+  font-style: normal;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ============================================================
+   DELETE BUTTON
+   ============================================================ */
+.deleteButton {
+  padding: 0.375rem 0.75rem;
+  height: auto;
+  width: auto;
+  background: transparent;
+  color: var(--danger);
+  border: 1.5px solid var(--danger);
+  border-radius: var(--r-sm);
+  font-family: var(--font);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color var(--t-fast),
+    color var(--t-fast);
+  white-space: nowrap;
+  opacity: 0.7;
+}
+
+.deleteButton:hover {
+  background: var(--danger);
+  color: #fff;
+  opacity: 1;
+}
+
+.deleteButton:focus-visible {
+  outline: 3px solid var(--danger);
+  outline-offset: 2px;
+  opacity: 1;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes rowSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
   }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes rowFadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.row-entering {
+  animation: rowSlideIn 0.28s ease forwards;
+}
+
+.row-removing {
+  animation: rowFadeOut 0.22s ease forwards;
+  pointer-events: none;
+}
+
+/* ============================================================
+   RESPONSIVE — TABLET (≤ 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+  body {
+    padding: 1rem 0.75rem 3rem;
+  }
+
+  .page-header {
+    padding: 2rem 0 1.75rem;
+  }
+
+  .calculator-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  #calculatorForm {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 1rem;
+  }
+
+  .button-group {
+    grid-column: 1 / -1;
+  }
+
+  .calcButton {
+    flex: 1;
+  }
+
+  #tr0 {
+    font-size: 0.875rem;
+  }
+
+  #tr0 th,
+  #tr0 td {
+    padding: 0.75rem 0.75rem;
+  }
+
+  #tr0 th:first-child,
+  #tr0 td:first-child {
+    padding-left: 0.875rem;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — MOBILE (≤ 480px)
+   ============================================================ */
+@media (max-width: 480px) {
+  #calculatorForm {
+    grid-template-columns: 1fr;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  .calcButton,
+  .clearButton {
+    width: 100%;
+    flex: none;
+  }
+
+  /* Hide profit-% column on very small screens */
+  #tr0 th:nth-child(5),
+  #tr0 td:nth-child(5) {
+    display: none;
+  }
+
+  #tr0 {
+    font-size: 0.8125rem;
+  }
+
+  #tr0 th,
+  #tr0 td {
+    padding: 0.625rem 0.5rem;
+  }
+
+  #tr0 th:first-child,
+  #tr0 td:first-child {
+    padding-left: 0.625rem;
+  }
+}
+
+/* ============================================================
+   404 PAGE
+   ============================================================ */
+.error-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  gap: 1rem;
+}
+
+.error-code {
+  font-size: clamp(5rem, 18vw, 10rem);
+  font-weight: 700;
+  color: var(--accent);
+  opacity: 0.2;
+  line-height: 1;
+}
+
+.error-message {
+  font-size: 1.125rem;
+  color: var(--text-muted);
+  font-weight: 300;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--t-fast);
+}
+
+.back-link:hover {
+  border-color: var(--accent);
+}

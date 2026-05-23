@@ -1,85 +1,137 @@
+<!DOCTYPE html>
 <html lang="fi">
   <head>
     <title>Tuottolaskuri - korkoa korolle</title>
-    <meta
-      name="description"
-      content="Korkoa korolle laskuri, joka ottaa kuukausisijoituksen huomioon"
-    />
+    <meta name="description" content="Korkoa korolle laskuri, joka ottaa kuukausisijoituksen huomioon" />
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0d0d1a" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Biryani:wght@200;300;400;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./css/main.css" />
-    <link
-      async=""
-      href="https://fonts.googleapis.com/css2?family=Biryani:wght@200&amp;display=swap"
-      rel="stylesheet"
-    />
     <script type="module" src="./js/main.js"></script>
   </head>
 
   <body>
     <div class="container">
-      <div>
-        <h1 class="asdf">Tuottolaskuri</h1>
 
-        <hr width="75%" style="opacity: 0.7; color: #654a4e" />
-        <p style="margin-bottom: 3rem; font-size: 2.5rem; color: #654a4e">
-          Valitse kertasijoitus, kk-säästösumma, säästöaika ja tuottoprosentti
-        </p>
-        <form>
-          <label>
-            <input
-              placeholder="esim. 1000 €"
-              type="number"
-              class="investment padding"
-            />
-            Kertasijoitus EUR
-          </label>
-          <br />
+      <header class="page-header">
+        <h1 class="page-title">Tuottolaskuri</h1>
+        <p class="page-subtitle">Laske sijoituksesi kasvu korkoa korolle -periaatteella</p>
+      </header>
 
-          <label>
-            <input
-              placeholder="esim. 100 €"
-              class="monthly padding"
-              type="number"
-            />
-            Kuukausisäästö EUR / kk
-          </label>
-          <br />
+      <main>
+        <section class="calculator-section" aria-label="Laskurin syötteet">
+          <div class="calculator-card">
+            <form id="calculatorForm" novalidate>
 
-          <label>
-            <input
-              placeholder="esim. 10 v"
-              class="years padding"
-              type="number"
-            />
-            Säästöaika vuosina
-          </label>
-          <br />
+              <div class="field-group">
+                <label for="investment-input">Kertasijoitus</label>
+                <div class="input-wrapper">
+                  <input
+                    id="investment-input"
+                    class="investment padding"
+                    type="number"
+                    placeholder="esim. 1000"
+                    min="0"
+                    step="any"
+                    aria-label="Kertasijoitus euroina"
+                  />
+                  <span class="unit-hint" aria-hidden="true">€</span>
+                </div>
+              </div>
 
-          <label>
-            <input
-              placeholder="esim. 7%"
-              class="profit padding"
-              type="number"
-            />
-            Tuotto %
-          </label>
-          <br />
+              <div class="field-group">
+                <label for="monthly-input">Kuukausisäästö</label>
+                <div class="input-wrapper">
+                  <input
+                    id="monthly-input"
+                    class="monthly padding"
+                    type="number"
+                    placeholder="esim. 100"
+                    min="0"
+                    step="any"
+                    aria-label="Kuukausisäästö euroina"
+                  />
+                  <span class="unit-hint" aria-hidden="true">€/kk</span>
+                </div>
+              </div>
 
-          <button class="calcButton">Laske</button>
-        </form>
-        <table id="tr0">
-          <tr>
-            <th>Nro</th>
-            <th>Säästössä yhteensä</th>
-            <th>Pääomaa</th>
-            <th>Tuottoa</th>
-            <th>Tuoton osuus %</th>
-            <th>Säästöaika vuosina</th>
-            <th>Poista rivi</th>
-          </tr>
-          <tr></tr>
-        </table>
-      </div>
+              <div class="field-group">
+                <label for="years-input">Säästöaika</label>
+                <div class="input-wrapper">
+                  <input
+                    id="years-input"
+                    class="years padding"
+                    type="number"
+                    placeholder="esim. 10"
+                    min="1"
+                    max="100"
+                    step="1"
+                    aria-label="Säästöaika vuosina"
+                  />
+                  <span class="unit-hint" aria-hidden="true">v</span>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label for="profit-input">Vuosituotto</label>
+                <div class="input-wrapper">
+                  <input
+                    id="profit-input"
+                    class="profit padding"
+                    type="number"
+                    placeholder="esim. 7"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    aria-label="Vuosituotto prosentteina"
+                  />
+                  <span class="unit-hint" aria-hidden="true">%</span>
+                </div>
+              </div>
+
+              <div class="button-group">
+                <button class="calcButton" type="submit" aria-label="Laske sijoituksen tuotto">
+                  Laske
+                </button>
+                <button class="clearButton" id="clearBtn" type="button" aria-label="Tyhjennä kaikki tulokset">
+                  Tyhjennä
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </section>
+
+        <section class="results-section" aria-label="Laskutulokset">
+          <div class="table-scroll-wrapper">
+            <table id="tr0" role="table" aria-label="Laskutulokset">
+              <caption class="sr-only">Korkoa korolle -laskurin tulokset</caption>
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Säästössä yhteensä</th>
+                  <th scope="col">Pääomaa</th>
+                  <th scope="col">Tuottoa</th>
+                  <th scope="col">Tuoton osuus</th>
+                  <th scope="col">Säästöaika</th>
+                  <th scope="col"><span class="sr-only">Toiminnot</span></th>
+                </tr>
+              </thead>
+              <tbody id="resultsBody">
+                <tr class="empty-state-row" id="emptyStateRow">
+                  <td colspan="7" class="empty-state">
+                    Ei vielä laskettuja tuloksia — syötä arvot ja paina <strong>Laske</strong>.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+
     </div>
   </body>
 </html>
