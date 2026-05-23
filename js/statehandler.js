@@ -1,16 +1,21 @@
 import { RESULT_TABLE_LENGTH, TD_ARRAY_INDEXES, ADDITIONAL_CELL_DATA_KEYS } from './constants.js';
 
 let calculationState = [];
+// Monotonically increasing counter — never decremented on delete,
+// so row IDs are always unique and never collide with existing rows.
+let rowCounter = 0;
 
 export function addResultToArray(result) {
   const { investment, finalProfit, finalCapital, finalPercentage, years } = result;
 
+  rowCounter++;
   calculationState.push({
     investment,
     finalProfit,
     finalCapital,
     finalPercentage,
     years,
+    rowId: rowCounter,
   });
 
   addRow(calculationState);
@@ -18,7 +23,8 @@ export function addResultToArray(result) {
 
 function addRow(calculationData) {
   const rowIndex = calculationData.length - 1;
-  const thisTrId = `tr${calculationData.length}`;
+  const stateItem = calculationData[rowIndex];
+  const thisTrId = `tr${stateItem.rowId}`;
 
   const tr = document.createElement('tr');
   tr.setAttribute('id', thisTrId);
@@ -64,9 +70,12 @@ function deleteRow(event) {
   const row = event.target.closest('tr');
 
   if (row) {
-    // Remove from state array to prevent memory leak and index mismatch
-    const rowIndex = parseInt(row.id.replace('tr', ''), 10) - 1;
-    calculationState.splice(rowIndex, 1);
+    // Find the state entry by its stored rowId (not by array index derived from DOM id)
+    const rowId = parseInt(row.id.replace('tr', ''), 10);
+    const stateIndex = calculationState.findIndex((item) => item.rowId === rowId);
+    if (stateIndex !== -1) {
+      calculationState.splice(stateIndex, 1);
+    }
     row.remove();
   }
 }
