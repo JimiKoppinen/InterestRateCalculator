@@ -5,7 +5,6 @@ export const RESULT_TABLE_LENGTH = 6;
 export const ADDITIONAL_CELL_DATA_KEYS = {
   classKey: 'class',
   boldTd: 'boldTd',
-  deleteKey: 'deleteButton',
 };
 
 export const TD_ARRAY_INDEXES = {

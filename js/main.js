@@ -11,13 +11,39 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-function runCalc(event) {
-  event.preventDefault();
+function showError(message) {
+  const errorEl = document.getElementById('errorMsg');
+  if (errorEl) {
+    errorEl.textContent = message;
+    errorEl.style.display = message ? 'block' : 'none';
+  }
+}
 
+function runCalc(event) {
   let investedAmount = getFormattedInputValue('investment');
   let years = getFormattedInputValue('years');
   let monthlyAmount = getFormattedInputValue('monthly');
   let profitPercentage = getFormattedInputValue('profit');
+
+  // Input validation
+  if (investedAmount === 0 && monthlyAmount === 0) {
+    showError('Syötä kertasijoitus tai kuukausisäästö.');
+    return;
+  }
+  if (investedAmount < 0 || monthlyAmount < 0) {
+    showError('Sijoitussummat eivät voi olla negatiivisia.');
+    return;
+  }
+  if (years <= 0) {
+    showError('Säästöaika täytyy olla vähintään 1 vuosi.');
+    return;
+  }
+  if (profitPercentage < 0) {
+    showError('Tuottoprosentti ei voi olla negatiivinen.');
+    return;
+  }
+  showError('');
+
   let monthlyProfit = calculateMonthlyProfit(profitPercentage);
   let initialInvestmentAmount = investedAmount;
 
@@ -37,7 +63,8 @@ function runCalc(event) {
 
   let finalCapital = calculateFinalCapital(initialInvestmentAmount, monthlyAmount, years);
   let finalProfit = calcFinalProfit(investedAmount, finalCapital);
-  let finalPercentage = roundNumber(calcProfitPercentage(investedAmount, finalProfit));
+  // Percentage is profit relative to total capital invested, not total final value
+  let finalPercentage = roundNumber(calcProfitPercentage(finalCapital, finalProfit));
 
   addResultToArray({
     investment: formatter.format(investedAmount),

@@ -35,7 +35,7 @@ function addRow(calculationData) {
 function createDeleteButton(rowId) {
   const td = document.createElement('td');
   const button = document.createElement('button');
-  button.innerHTML = 'Poista Rivi';
+  button.textContent = 'Poista Rivi';
   button.setAttribute(ADDITIONAL_CELL_DATA_KEYS.classKey, 'deleteButton');
   button.addEventListener('click', deleteRow);
   td.appendChild(button);
@@ -43,18 +43,17 @@ function createDeleteButton(rowId) {
 }
 
 function addContent(tdArray, rowIndex) {
-  tdArray[TD_ARRAY_INDEXES.rowNumber].innerHTML = `${rowIndex + 1}.`;
+  tdArray[TD_ARRAY_INDEXES.rowNumber].textContent = `${rowIndex + 1}.`;
   tdArray[TD_ARRAY_INDEXES.investment].setAttribute(
     ADDITIONAL_CELL_DATA_KEYS.classKey,
     ADDITIONAL_CELL_DATA_KEYS.boldTd
   );
-  tdArray[TD_ARRAY_INDEXES.investment].innerHTML = `${calculationState[rowIndex].investment}`;
-  tdArray[TD_ARRAY_INDEXES.finalCapital].innerHTML = `${calculationState[rowIndex].finalCapital}`;
-  tdArray[TD_ARRAY_INDEXES.finalProfit].innerHTML = `${calculationState[rowIndex].finalProfit}`;
-  tdArray[
-    TD_ARRAY_INDEXES.finalPercentage
-  ].innerHTML = `${calculationState[rowIndex].finalPercentage} %`;
-  tdArray[TD_ARRAY_INDEXES.years].innerHTML = `${calculationState[rowIndex].years}`;
+  tdArray[TD_ARRAY_INDEXES.investment].textContent = calculationState[rowIndex].investment;
+  tdArray[TD_ARRAY_INDEXES.finalCapital].textContent = calculationState[rowIndex].finalCapital;
+  tdArray[TD_ARRAY_INDEXES.finalProfit].textContent = calculationState[rowIndex].finalProfit;
+  tdArray[TD_ARRAY_INDEXES.finalPercentage].textContent =
+    `${calculationState[rowIndex].finalPercentage} %`;
+  tdArray[TD_ARRAY_INDEXES.years].textContent = calculationState[rowIndex].years;
 }
 
 function appendChildren(parentElementId, childElement) {
@@ -65,6 +64,9 @@ function deleteRow(event) {
   const row = event.target.closest('tr');
 
   if (row) {
+    // Remove from state array to prevent memory leak and index mismatch
+    const rowIndex = parseInt(row.id.replace('tr', ''), 10) - 1;
+    calculationState.splice(rowIndex, 1);
     row.remove();
   }
 }

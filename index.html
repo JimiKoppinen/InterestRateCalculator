@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="fi">
   <head>
     <title>Tuottolaskuri - korkoa korolle</title>
@@ -6,6 +7,7 @@
       content="Korkoa korolle laskuri, joka ottaa kuukausisijoituksen huomioon"
     />
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./css/main.css" />
     <link
       async=""
@@ -18,10 +20,10 @@
   <body>
     <div class="container">
       <div>
-        <h1 class="asdf">Tuottolaskuri</h1>
+        <h1>Tuottolaskuri</h1>
 
-        <hr width="75%" style="opacity: 0.7; color: #654a4e" />
-        <p style="margin-bottom: 3rem; font-size: 2.5rem; color: #654a4e">
+        <hr class="divider" />
+        <p class="subtitle">
           Valitse kertasijoitus, kk-säästösumma, säästöaika ja tuottoprosentti
         </p>
         <form>
@@ -67,6 +69,7 @@
 
           <button class="calcButton">Laske</button>
         </form>
+        <p id="errorMsg" class="errorMsg"></p>
         <table id="tr0">
           <tr>
             <th>Nro</th>
@@ -77,7 +80,6 @@
             <th>Säästöaika vuosina</th>
             <th>Poista rivi</th>
           </tr>
-          <tr></tr>
         </table>
       </div>
     </div>
